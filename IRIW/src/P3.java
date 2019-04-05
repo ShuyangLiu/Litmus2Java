@@ -7,6 +7,7 @@ public class P3 extends Thread
 {
     private Point p;
     private CyclicBarrier signal;
+    private CyclicBarrier done;
 
     static VarHandle X;
     static {
@@ -28,9 +29,10 @@ public class P3 extends Thread
         }
     }
 
-    P3(Point p, CyclicBarrier sig) {
+    P3(Point p, CyclicBarrier sig, CyclicBarrier done) {
         this.p = p;
         signal = sig;
+        this.done = done;
     }
 
     public void run() {
@@ -41,6 +43,11 @@ public class P3 extends Thread
         }
         // MOV [y],$1
         Y.setOpaque(p, 1);
+        try {
+            done.await();
+        } catch (InterruptedException | BrokenBarrierException e) {
+            e.printStackTrace();
+        }
     }
 
 

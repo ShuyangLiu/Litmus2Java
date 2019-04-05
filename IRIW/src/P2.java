@@ -6,6 +6,7 @@ import java.util.concurrent.CyclicBarrier;
 public class P2 extends Thread
 {
     private CyclicBarrier signal;
+    private CyclicBarrier done;
 
     private Point p;
 
@@ -31,9 +32,10 @@ public class P2 extends Thread
         }
     }
 
-    P2(Point p, CyclicBarrier sig) {
+    P2(Point p, CyclicBarrier sig, CyclicBarrier done) {
         EAX = EBX = 0;
         signal = sig;
+        this.done = done;
         this.p = p;
     }
 
@@ -49,6 +51,12 @@ public class P2 extends Thread
         //MOV EBX,[y]
         EAX = X.getOpaque(p);
         EBX = Y.getOpaque(p);
+
+        try {
+            done.await();
+        } catch (InterruptedException | BrokenBarrierException e) {
+            e.printStackTrace();
+        }
 
     }
 }
